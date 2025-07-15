@@ -8,6 +8,7 @@ A Python package for generating and analyzing **homodesmotic reaction enthalpies
 
 - Balance homodesmotic reactions automatically.
 - Compute reaction enthalpies from Gaussian output.
+- References ATcT values for enthalpies of formation.
 - Support for single and multiple computation workflows.
 - Command-line interface (CLI) tools for ease of use.
 
