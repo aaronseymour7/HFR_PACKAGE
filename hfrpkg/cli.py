@@ -29,7 +29,9 @@ def main():
     parser.add_argument("--rhs", nargs="+", help="Required RHS molecules (comma-separated or list)")
     parser.add_argument("--substruct", nargs="+", help="Substructures to replace")
     parser.add_argument("--replacement", nargs="+", help="Replacement structures")
-    parser.add_argument("--outfolder", help="Output folder (only required for write)")
+    parser.add_argument("--outfolder", help="Output outfolder (only required for write)")
+    parser.add_argument("--m", nargs="+", help="[METHOD]")
+    parser.add_argument("--b", nargs="+", help="[BASIS]")
 
     args = parser.parse_args()
 
@@ -37,7 +39,9 @@ def main():
     rhs = parse_smiles_list(args.rhs)
     substruct = parse_smiles_list(args.substruct)
     replacement = parse_smiles_list(args.replacement)
-
+    method = parse_smiles_list(args.m)
+    basis = parse_smiles_list(args.b)
+    
     run_reaction(
         action_type=args.action_type,
         reaction_type=args.reaction_type,
@@ -47,6 +51,8 @@ def main():
         substruct=substruct,
         replacement=replacement,
         outfolder=args.outfolder,
+        method = method,
+        basis = basis,
     )
 
 if __name__ == "__main__":
