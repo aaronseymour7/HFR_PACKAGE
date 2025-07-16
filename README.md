@@ -1,12 +1,12 @@
 # HFR_PACKAGE
 
-A Python package for generating and analyzing **homodesmotic reaction enthalpies** using RDKit, PuLP, and AaronTools.
+A Python package for generating and analyzing **homodesmotic family reaction enthalpies** using RDKit, PuLP, and AaronTools.
 
 ---
 
 ## Features
 
-- Balance homodesmotic reactions automatically.
+- Balance Isogyric, Isodesmic, Hypohomodesmotic, and Homodesmotic reactions automatically.
 - Compute reaction enthalpies from Gaussian output.
 - References ATcT values for enthalpies of formation.
 - Support for single and multiple computation workflows.
@@ -18,7 +18,7 @@ A Python package for generating and analyzing **homodesmotic reaction enthalpies
 
 ### Prerequisites
 
-This package depends on some scientific libraries that are easiest to install via **Conda**:
+This package depends on some scientific libraries:
 
 - [RDKit](https://www.rdkit.org/docs/Install.html)  
 - [PuLP](https://coin-or.github.io/pulp/)  
