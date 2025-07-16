@@ -20,13 +20,14 @@ reaction_map = {
     "hypohomodesmotic": Hypohomodesmotic,
 }
 
-method = Theory(
+
+level = Theory(
     method="M062X",
     basis="6-31G",
     job_type=[OptimizationJob(), FrequencyJob()]
 )
 
-def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, substruct=None, replacement=None, outfolder=None):
+def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, substruct=None, replacement=None, outfolder=None,method=None, basis=None):
     mol = Chem.AddHs(Chem.MolFromSmiles(input_smiles))
     if mol is None:
         raise ValueError(f"Invalid SMILES: {input_smiles}")
@@ -37,7 +38,10 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
     if status != 'Optimal':
         print("Infeasible")
         return
-
+    if method is None:
+        method = "B3LYP"
+    if basis is None:
+        basis = "6-31G"
     if action_type == "count":
         display_reaction_counts(mol, reaction_fn)
 
@@ -53,6 +57,11 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         if not outfolder:
             raise ValueError("Outfolder must be provided for write action")
         os.makedirs(outfolder, exist_ok=True)
+        level = Theory(
+            method=method,
+            basis=basis,
+            job_type=[OptimizationJob(), FrequencyJob()]
+        )
         index_file = os.path.join(outfolder, "index.txt")
         with open(index_file, "w") as idx:
             idx.write(f"Level:\t {reaction_fn.__name__}\n")
@@ -63,7 +72,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"R{Li}_{coeff}"
-                FileWriter.write_file(geom=geom, style="com", outfile=os.path.join(outfolder, name + ".com"), theory=method)
+                FileWriter.write_file(geom=geom, style="com", outfile=os.path.join(outfolder, name + ".com"), theory=level)
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Li += 1
             for mol, coeff in rhs_mols:
@@ -71,7 +80,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"P{Ri}_{coeff}"
-                FileWriter.write_file(geom=geom, style="com", outfile=os.path.join(outfolder, name + ".com"), theory=method)
+                FileWriter.write_file(geom=geom, style="com", outfile=os.path.join(outfolder, name + ".com"), theory=level)
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Ri += 1
         print("Reaction written to", outfolder)
