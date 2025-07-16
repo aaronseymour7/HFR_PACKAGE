@@ -28,20 +28,26 @@ level = Theory(
 )
 
 def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, substruct=None, replacement=None, outfolder=None,method=None, basis=None):
+    
     mol = Chem.AddHs(Chem.MolFromSmiles(input_smiles))
     if mol is None:
         raise ValueError(f"Invalid SMILES: {input_smiles}")
-
+    if method is None:
+        method = "B3LYP"
+    if basis is None:
+        basis = "6-31G"
+    level = Theory(
+            method=method,
+            basis=basis,
+            job_type=[OptimizationJob(), FrequencyJob()]
+        )
     reaction_fn = reaction_map[reaction_type.lower()]
     rhs_mols, lhs_mols, status = reaction_fn(mol, lhs, rhs, substruct, replacement)
 
     if status != 'Optimal':
         print("Infeasible")
         return
-    if method is None:
-        method = "B3LYP"
-    if basis is None:
-        basis = "6-31G"
+    
     if action_type == "count":
         display_reaction_counts(mol, reaction_fn)
 
@@ -57,11 +63,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         if not outfolder:
             raise ValueError("Outfolder must be provided for write action")
         os.makedirs(outfolder, exist_ok=True)
-        level = Theory(
-            method=method,
-            basis=basis,
-            job_type=[OptimizationJob(), FrequencyJob()]
-        )
+        
         index_file = os.path.join(outfolder, "index.txt")
         with open(index_file, "w") as idx:
             idx.write(f"Level:\t {reaction_fn.__name__}\n")
