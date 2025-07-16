@@ -3,8 +3,11 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
+  - coincbc
   - rdkit
   - pulp
   - pip
- - pip:
+  - jinja2
+  - pip:
       - git+https://github.com/QChASM/AaronTools.py.git
+
