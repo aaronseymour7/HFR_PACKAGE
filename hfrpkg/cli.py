@@ -30,8 +30,8 @@ def main():
     parser.add_argument("--substruct", nargs="+", help="Substructures to replace")
     parser.add_argument("--replacement", nargs="+", help="Replacement structures")
     parser.add_argument("--outfolder", help="Output outfolder (only required for write)")
-    parser.add_argument("--m", nargs="+", help="[METHOD]")
-    parser.add_argument("--b", nargs="+", help="[BASIS]")
+    parser.add_argument("--m", help="[METHOD]")
+    parser.add_argument("--b", help="[BASIS]")
 
     args = parser.parse_args()
 
