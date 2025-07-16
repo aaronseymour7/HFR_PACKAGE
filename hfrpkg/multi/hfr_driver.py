@@ -9,7 +9,7 @@ reaction_map = {
     "4": "homodesmotic"
 }
 
-def main(input_file):
+def main(input_file, method, basis):
     with open(input_file, "r") as f:
         for i, line in enumerate(f, start=1):
             line = line.strip()
@@ -27,7 +27,7 @@ def main(input_file):
                 continue
 
             outfolder = f"{i}.mhfr"
-            print(f"[RUN] Line {i}: level={level}, type={reaction_type}, SMILES={smiles}, folder={outfolder}")
+            #print(f"[RUN] Line {i}: level={level}, type={reaction_type}, SMILES={smiles}, folder={outfolder}")
 
             try:
                 run_reaction(
@@ -38,17 +38,20 @@ def main(input_file):
                     rhs=None,
                     substruct=None,
                     replacement=None,
-                    outfolder=outfolder
+                    outfolder=outfolder,
+                    method = method,
+                    basis = basis
                 )
-                print(f"[DONE] Folder written: {outfolder}")
+                #print(f"[DONE] Folder written: {outfolder}")
             except Exception as e:
                 print(f"[ERROR] Line {i} failed: {e}")
 def main_cli():
-    import sys
-    if len(sys.argv) != 2:
-        print("Usage: multi <input_file.txt>")
-        sys.exit(1)
-    main(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Run multiple HFR jobs from a .txt list")
+    parser.add_argument("input_file", help="Path to input .txt file")
+    parser.add_argument("--m", help="METHOD", default=None)
+    parser.add_argument("--b", help="BASIS", default=None)
+    args = parser.parse_args()
+    main(args.input_file, method=args.m, basis=args.b)
 
 if __name__ == "__main__":
     main_cli()
