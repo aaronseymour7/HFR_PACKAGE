@@ -2,6 +2,8 @@
 
 import os
 from hfrpkg.runner import run_reaction
+import argparse
+
 reaction_map = {
     "1": "isogyric",
     "2": "isodesmic",
