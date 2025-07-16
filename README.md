@@ -22,12 +22,5 @@ This package depends on some scientific libraries:
 
 - [RDKit](https://www.rdkit.org/docs/Install.html)  
 - [PuLP](https://coin-or.github.io/pulp/)  
-- [AaronTools](https://github.com/QChASM/AaronTools.py) (installed automatically via pip)
+- [AaronTools](https://github.com/QChASM/AaronTools.py) 
 
-### Using Conda Environment (Recommended)
-
-1. Create the conda environment from the provided `environment.yml`:
-
-   ```bash
-   conda env create -f environment.yml
-   conda activate hfrpkg-env
