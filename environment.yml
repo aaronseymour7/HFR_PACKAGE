@@ -9,5 +9,5 @@ dependencies:
   - pip
   - jinja2
   - pip:
-      - git+https://github.com/QChASM/AaronTools.py.git
+    - git+https://github.com/QChASM/AaronTools.py.git
 
