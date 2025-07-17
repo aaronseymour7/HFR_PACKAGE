@@ -3,7 +3,7 @@
 import glob
 import os
 import csv
-from hfrpkg.multi.run_folder import run_folder
+from hfrpkg.multi.compute_folder import run_folder
 def main():
     results = []
     cwd = os.getcwd()
