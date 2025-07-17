@@ -55,9 +55,11 @@ def run_folder(folder_path):
             pass
         return None
 
-    def get_Hf(inchi, atct_path="/home/ads09449/bin/ATcT_lib.txt"):
+    def get_Hf(inchi):
+        #atct_path="/home/ads09449/bin/ATcT_lib.txt"
         try:
-            with open(atct_path, encoding="utf-8") as f:
+            with importlib.resources.open_text("hfrpkg.data", "ATcT_lib.txt", encoding="utf-8") as f:
+            #with open(atct_path, encoding="utf-8") as f:
                 for line in f:
                     parts = line.strip().split("\t")
                     if len(parts) >= 6 and parts[3] == inchi:
