@@ -6,7 +6,7 @@ from hfrpkg.compute_folder import compute_folder
 def kjTokcal(value):
         try:
             return value / 4.184
-        except (TypeError, ZeroDivisionError):
+        except TypeError:
             return None  
 def write_single_reaction(reaction_data, folder_path):
     output_path = os.path.join(folder_path, "reaction_summary.txt")
