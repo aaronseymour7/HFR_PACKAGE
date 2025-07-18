@@ -141,11 +141,14 @@ def compute_folder(folder_path):
         mol_type, coeff = extract_coeff_and_type(input_file)
         if mol_type is not None:
             inchi = get_inchi(mol_type)
+            input_inchi = inchi
             smiles = get_smiles(mol_type)
+            input_smiles = smiles
             Hf = get_Hf(inchi)
             if Hf is None:
                 print(f"[ATcT MISSING]  {folder_path}  {mol_type} → InChI: {inchi}")
                 Hf = ""
+        atct_value = Hf
         reactants_data.append((coeff, smiles, inchi, Hf))
         
         # Collect product info
@@ -162,24 +165,13 @@ def compute_folder(folder_path):
             Hf_products += (Hf if Hf else 0) * coeff
             products_data.append((coeff, smiles, inchi, Hf))
 
-        # Calculate input reaction enthalpy
+
         if missing_Hf:
             input_hf = ""
         else:
-            input_hf = round((Hf_products - Hf_reactants - reaction) / (4.184 * final_coeff), 2)
+            input_hf = round((Hf_products - Hf_reactants - reaction) / (final_coeff), 2)
 
-        # The last reactant is considered the input molecule (to get input smiles/inchi)
-        target_file = reactants[-1]
-        mol_type, _ = extract_coeff_and_type(target_file)
-        input_inchi = get_inchi(mol_type)
-        input_smiles = get_smiles(mol_type)
-
-        # Get ATcT for input molecule
-        input_Hf = get_Hf(input_inchi)
-        if input_Hf is not None:
-            atct_value = round(input_Hf / 4.184, 2)
-        else:
-            atct_value = ""
+        
 
         level = get_level()
 
