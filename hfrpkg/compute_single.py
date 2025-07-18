@@ -8,7 +8,7 @@ from hfrpkg.write_data import write_single_reaction
 
 def main():
     result = None
-    mhfr_file = "."  # current directory
+    mhfr_file = "."  
 
     with open("Reaction_summary.txt", "w", encoding="utf-8") as rxn_fout:
         try:
