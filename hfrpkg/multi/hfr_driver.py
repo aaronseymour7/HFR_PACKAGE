@@ -50,8 +50,8 @@ def main(input_file, method, basis):
 def main_cli():
     parser = argparse.ArgumentParser(description="Run multiple HFR jobs from a .txt list")
     parser.add_argument("input_file", help="Path to input .txt file")
-    parser.add_argument("--m", help="METHOD", default=None)
-    parser.add_argument("--b", help="BASIS", default=None)
+    parser.add_argument("--m", help="METHOD")
+    parser.add_argument("--b", help="BASIS")
     args = parser.parse_args()
     main(args.input_file, method=args.m, basis=args.b)
 
