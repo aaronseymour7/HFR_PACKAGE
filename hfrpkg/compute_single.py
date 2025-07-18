@@ -10,13 +10,12 @@ def main():
     result = None
     mhfr_file = "."  
 
-    with open("Reaction_summary.txt", "w", encoding="utf-8") as rxn_fout:
-        try:
-            data = compute_folder(mhfr_file)
-            if data is not None:
-                result = write_single_reaction(data, mhfr_file)
-        except Exception as e:
-            print(f"Error processing {mhfr_file}: {e}")
+    try:
+        data = compute_folder(mhfr_file)
+        if data is not None:
+            result = write_single_reaction(data, mhfr_file)
+    except Exception as e:
+        print(f"Error processing {mhfr_file}: {e}")
 
     with open("enthalpy_summary.csv", "w", newline="") as fout:
         writer = csv.writer(fout)
