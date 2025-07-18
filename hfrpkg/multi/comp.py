@@ -20,7 +20,7 @@ def main():
 
     with open("enthalpies_summary.csv", "w", newline="") as fout:
         writer = csv.writer(fout)
-        writer.writerow(["SMILES","LEVEL","InChI", "ΔHf DFT (kcal/mol)", "ΔHf ATcT (kcal/mol)"])
+        writer.writerow(["SMILES","LEVEL","InChI", "ΔHf DFT (kcal/mol)"])
         writer.writerows(results)
 
 if __name__ == "__main__":
