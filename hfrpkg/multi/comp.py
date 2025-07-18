@@ -3,7 +3,7 @@
 import glob
 import os
 import csv
-from hfrpkg.multi.compute_folder_UPDATE import run_folder
+from hfrpkg.multi.compute_folder import run_folder
 from hfrpkg.multi.write_data import write_single_reaction
 
 def main():
