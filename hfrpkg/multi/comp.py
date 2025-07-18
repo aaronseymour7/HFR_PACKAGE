@@ -3,8 +3,8 @@
 import glob
 import os
 import csv
-from hfrpkg.multi.compute_folder import compute_folder
-from hfrpkg.multi.write_data import write_single_reaction
+from hfrpkg.compute_folder import compute_folder
+from hfrpkg.write_data import write_single_reaction
 
 def main():
     results = []
