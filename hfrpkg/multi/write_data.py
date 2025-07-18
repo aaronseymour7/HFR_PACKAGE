@@ -18,4 +18,4 @@ def write_single_reaction(reaction_data, folder_path):
             fout.write(f"{coeff} {smiles}\t{inchi}\t{atct}\n")
         
         fout.write("\n")
-      return reaction_data['input_smiles'],reaction_data['level'],reaction_data['input_inchi'],reaction_data['dft_hf'],reaction_data['input_atct']
+    return reaction_data['input_smiles'],reaction_data['level'],reaction_data['input_inchi'],reaction_data['dft_hf'],reaction_data['input_atct']
