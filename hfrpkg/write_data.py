@@ -32,4 +32,3 @@ def write_single_reaction(reaction_data, folder_path):
         kjTokcal(reaction_data['dft_hf']),
         kjTokcal(reaction_data['input_atct']),
     )
-    #return reaction_data['input_smiles'],reaction_data['level'],reaction_data['input_inchi'],reaction_data['dft_hf']/4.184,reaction_data['input_atct']/4.184
