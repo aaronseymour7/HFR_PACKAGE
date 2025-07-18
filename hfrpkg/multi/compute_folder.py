@@ -6,7 +6,7 @@ import re
 from AaronTools.fileIO import FileReader
 import importlib.resources  
 
-def run_folder(folder_path):
+def compute_folder(folder_path):
     def get_B(filename):
         base = filename.replace(".log", "")
         return int(base.split("_")[0][1:])
