@@ -82,16 +82,16 @@ def get_inchi(log_filename, index_path="index.txt"):
 
 def get_Hf(inchi):
     #atct_path="/home/ads09449/bin/ATcT_lib.txt"
-        try:
-            with importlib.resources.open_text("hfrpkg.data", "ATcT_lib.txt", encoding="utf-8") as f:
-            #with open(atct_path, encoding="utf-8") as f:
-                for line in f:
-                    parts = line.strip().split("\t")
-                    if len(parts) >= 6 and parts[3] == inchi:
-                        return float(parts[5])
-        except Exception:
-            pass
-        return None
+    try:
+        with importlib.resources.open_text("hfrpkg.data", "ATcT_lib.txt", encoding="utf-8") as f:
+        #with open(atct_path, encoding="utf-8") as f:
+            for line in f:
+                parts = line.strip().split("\t")
+                if len(parts) >= 6 and parts[3] == inchi:
+                    return float(parts[5])
+    except Exception:
+        pass
+    return None
 
 def main():
     log_files = glob.glob("*.log")
