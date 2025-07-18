@@ -2,12 +2,12 @@
 
 import os
 from hfrpkg.multi.fill import fill_logs
-from hfrpkg.multi.comp import main as run_comparison
+from hfrpkg.multi.comp import main as comp
 
 def combined_postprocess():
     fill_logs()
 
-    run_comparison()
+    comp()
 
     print("Done.")
 
