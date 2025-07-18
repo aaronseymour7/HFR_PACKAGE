@@ -23,4 +23,5 @@ multi-compute = "hfrpkg.multi.compute_multiple:main_cli"
 multi-spec = "hfrpkg.multi.unique_spec:main_cli"
 folder-compute = "hfrpkg.compute_single:main"
 folder-run = "hfrpkg.run_single:main"
+folder-spec = "hfrpkg.run_spec:main_cli"
 
