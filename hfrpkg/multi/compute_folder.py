@@ -4,7 +4,7 @@ import os
 import glob
 import re
 from AaronTools.fileIO import FileReader
-import importlib.resources  # for opening package data file
+import importlib.resources  
 
 def run_folder(folder_path):
     def get_B(filename):
