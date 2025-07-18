@@ -125,7 +125,7 @@ def compute_folder(folder_path):
             raise ValueError("Could not determine final coefficient")
 
         # Collect reactant info
-        for f in reactants:  
+        for f in reactants[:-1]:  
             mol_type, coeff = extract_coeff_and_type(f)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
@@ -137,7 +137,17 @@ def compute_folder(folder_path):
                 Hf = ""
             Hf_reactants += (Hf if Hf else 0) * coeff
             reactants_data.append((coeff, smiles, inchi, Hf))
-
+        input_file = reactants[-1]
+        mol_type, coeff = extract_coeff_and_type(input_file)
+        if mol_type is not None:
+            inchi = get_inchi(mol_type)
+            smiles = get_smiles(mol_type)
+            Hf = get_Hf(inchi)
+            if Hf is None:
+                print(f"[ATcT MISSING]  {folder_path}  {mol_type} → InChI: {inchi}")
+                Hf = ""
+        reactants_data.append((coeff, smiles, inchi, Hf))
+        
         # Collect product info
         for f in products:
             mol_type, coeff = extract_coeff_and_type(f)
