@@ -13,7 +13,7 @@ def main():
         for mhfr_file in sorted(glob.glob("*.mhfr"), key=lambda x: int(x.split(".")[0])):
             if os.path.isdir(mhfr_file):
                 try:
-                    data = run_folder(mhfr_file)
+                    data = compute_folder(mhfr_file)
                     if data is not None:
                         result = write_single_reaction(data, mhfr_file)
                         if result is not None:
