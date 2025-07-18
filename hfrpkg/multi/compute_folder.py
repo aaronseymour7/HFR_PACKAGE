@@ -125,7 +125,7 @@ def compute_folder(folder_path):
             raise ValueError("Could not determine final coefficient")
 
         # Collect reactant info
-        for f in reactants[:-1]:  # skip last reactant (the input)
+        for f in reactants:  
             mol_type, coeff = extract_coeff_and_type(f)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
