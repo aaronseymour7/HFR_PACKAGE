@@ -1,7 +1,7 @@
 import os
 import glob
 import re
-from hfrpkg.multi.compute_folder import compute_folder
+from hfrpkg.compute_folder import compute_folder
 
 def kjTokcal(value):
         try:
