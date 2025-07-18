@@ -39,8 +39,7 @@ def main():
     rhs = parse_smiles_list(args.rhs)
     substruct = parse_smiles_list(args.substruct)
     replacement = parse_smiles_list(args.replacement)
-    method = parse_smiles_list(args.m)
-    basis = parse_smiles_list(args.b)
+
     
     run_reaction(
         action_type=args.action_type,
@@ -51,8 +50,8 @@ def main():
         substruct=substruct,
         replacement=replacement,
         outfolder=args.outfolder,
-        method = method,
-        basis = basis,
+        method = args.m,
+        basis = args.b,
     )
 
 if __name__ == "__main__":
