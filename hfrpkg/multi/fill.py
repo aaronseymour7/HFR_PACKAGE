@@ -30,7 +30,7 @@ def fill_logs():
             continue
 
         with open(index_file, "r") as f:
-            lines = f.readlines()[2:]
+            lines = f.readlines()[3:]
 
         for line in lines:
             if line.startswith("Level") or not line.strip():
