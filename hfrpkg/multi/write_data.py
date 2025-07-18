@@ -11,7 +11,7 @@ def kjTokcal(value):
 def write_single_reaction(reaction_data, folder_path):
     output_path = os.path.join(folder_path, "reaction_summary.txt")
     with open(output_path, "w", encoding="utf-8") as fout:
-        fout.write(f"{reaction_data['input_smiles']}\t{reaction_data['input_inchi']}\t{reaction_data['dft_hf']}\n")
+        fout.write(f"{reaction_data['input_smiles']}\t{reaction_data['input_inchi']}\t{reaction_data['reaction_Hf']}\t{reaction_data['dft_hf']}\n")
         
         fout.write("REACTANTS\n")
         for coeff, smiles, inchi, atct in reaction_data['reactants']:
