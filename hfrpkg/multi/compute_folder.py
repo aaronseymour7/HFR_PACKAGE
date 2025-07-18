@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 
 import os
 import glob
@@ -170,7 +170,7 @@ def compute_folder(folder_path):
             input_hf = ""
         else:
             input_hf = round((Hf_products - Hf_reactants - reaction) / (final_coeff), 2)
-
+    
         
 
         level = get_level()
@@ -183,6 +183,7 @@ def compute_folder(folder_path):
             "reactants": reactants_data,
             "products": products_data,
             "input_atct": atct_value,
+            "reaction_H": reaction
         }
 
     except Exception as e:
