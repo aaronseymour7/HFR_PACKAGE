@@ -5,7 +5,6 @@ import glob
 import shutil
 
 def load_unique_inchi_map(index_path):
-    """Maps InChI → filename from unique_com_files/index.txt"""
     inchi_to_filename = {}
     with open(index_path, "r") as f:
         for line in f:
