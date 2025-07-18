@@ -16,3 +16,8 @@ def run_jobs():
             submit_process.submit()
         except Exception as e:
             print(f"failed to submit {f}: {e}")
+def main_cli():
+    run_jobs()
+
+if __name__ == "__main__":
+    main_cli()
