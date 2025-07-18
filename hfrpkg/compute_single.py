@@ -79,17 +79,19 @@ def get_inchi(log_filename, index_path="index.txt"):
         print(f"Index file '{index_path}' not found.")
         return None
 
-def get_Hf(inchi, atct_path="/home/ads09449/bin/ATcT_lib.txt"):
-    with open(atct_path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split("\t")
-            if parts[3] == inchi:
-                try:
-                    return float(parts[5])  # column 6 is ΔfH
-                except ValueError:
-                    return None
-    print(f"No ATcT value for {inchi}")
-    return None
+
+def get_Hf(inchi):
+    #atct_path="/home/ads09449/bin/ATcT_lib.txt"
+        try:
+            with importlib.resources.open_text("hfrpkg.data", "ATcT_lib.txt", encoding="utf-8") as f:
+            #with open(atct_path, encoding="utf-8") as f:
+                for line in f:
+                    parts = line.strip().split("\t")
+                    if len(parts) >= 6 and parts[3] == inchi:
+                        return float(parts[5])
+        except Exception:
+            pass
+        return None
 
 def main():
     log_files = glob.glob("*.log")
