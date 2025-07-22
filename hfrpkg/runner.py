@@ -75,7 +75,8 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"R{Li}_{coeff}"
-                FileWriter.write_file(geom=geom, style="com", outfile=os.path.join(outfolder, name + ".com"), theory=level)
+                outfile=os.path.join(outfolder, name + ".com")
+                geom.write(outfile=outfile, theory=level)    
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Li += 1
             for mol, coeff in rhs_mols:
@@ -83,7 +84,8 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"P{Ri}_{coeff}"
-                FileWriter.write_file(geom=geom, style="com", outfile=os.path.join(outfolder, name + ".com"), theory=level)
+                outfile=os.path.join(outfolder, name + ".com")
+                geom.write(outfile=outfile, theory=level)
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Ri += 1
         print("Reaction written to", outfolder)
