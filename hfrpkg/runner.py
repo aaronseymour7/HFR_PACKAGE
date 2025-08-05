@@ -21,13 +21,19 @@ reaction_map = {
 }
 
 
-level = Theory(
-    method="M062X",
-    basis="6-31G",
-    job_type=[OptimizationJob(), FrequencyJob()]
-)
+extension_map = {
+    "g": ".com"
+    "o": ".inp"
+    "p": ".in"
+}
+software_map = {
+    "g": "Gaussian"
+    "o": "Orca"
+    "p": "Psi4"
+}
 
-def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, substruct=None, replacement=None, outfolder=None,method=None, basis=None):
+
+def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, substruct=None, replacement=None, outfolder=None,method=None, basis=None, extension=None):
     
     mol = Chem.AddHs(Chem.MolFromSmiles(input_smiles))
     if mol is None:
@@ -36,6 +42,10 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         method = "B3LYP"
     if basis is None:
         basis = "6-31G"
+    software = extension
+    if extension is None:
+        extension = "g"
+        software = "g"
     level = Theory(
             method=method,
             basis=basis,
@@ -66,7 +76,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         
         index_file = os.path.join(outfolder, "index.txt")
         with open(index_file, "w") as idx:
-            idx.write(f"Level:\t {reaction_fn.__name__}\n")
+            idx.write(f"Level:\t {reaction_fn.__name__} \t Software: \t {software}\n")
             idx.write(f"Input SMILES:\t{input_smiles}\n")
             idx.write("Filename\tInChI\tSMILES\n")
             Ri = Li = 1
@@ -75,7 +85,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"R{Li}_{coeff}"
-                outfile=os.path.join(outfolder, name + ".com")
+                outfile=os.path.join(outfolder, name + extension)
                 geom.write(outfile=outfile, theory=level)    
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Li += 1
@@ -84,7 +94,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"P{Ri}_{coeff}"
-                outfile=os.path.join(outfolder, name + ".com")
+                outfile=os.path.join(outfolder, name + extension)
                 geom.write(outfile=outfile, theory=level)
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Ri += 1
