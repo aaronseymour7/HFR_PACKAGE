@@ -44,8 +44,8 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         basis = "6-31G"
     if extension is None:
         extension = "g"
-    software = software_map[extension]
-    ext = extension_map[extension]
+    software = software_map[extension.lower()]
+    ext = extension_map[extension.lower()]
     level = Theory(
             method=method,
             basis=basis,
