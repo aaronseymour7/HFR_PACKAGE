@@ -32,7 +32,7 @@ def main():
     parser.add_argument("--outfolder", help="Output outfolder (only required for write)")
     parser.add_argument("--m", help="[METHOD]")
     parser.add_argument("--b", help="[BASIS]")
-    parser.add_argument("--s", help="Software to use ["g"-Gaussian, "o"-Orca, "p"-Psi4] Default:Gaussian")
+    parser.add_argument("--s", help="Software to use ['g'-Gaussian, 'o'-Orca, 'p'-Psi4] Default:Gaussian")
 
     args = parser.parse_args()
 
