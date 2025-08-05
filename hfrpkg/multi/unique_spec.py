@@ -42,9 +42,10 @@ def main_cli():
     parser = argparse.ArgumentParser(description="Generate and submit SP .com files from optimized .log files")
     parser.add_argument("--m", "--method", dest="method", default="m06-2x", help="DFT method (default: m06-2x)")
     parser.add_argument("--b", "--basis", dest="basis", default="def2tzvp", help="Basis set (default: def2tzvp)")
+    parser.add_argument("--s", default="g", help="Software to use ['g'-Gaussian, 'o'-Orca, 'p'-Psi4] (default:Gaussian)")
     args = parser.parse_args()
 
-    make_spec(method=args.method, basis=args.basis)
+    make_spec(method=args.method, basis=args.basis, ext = s)
 
 if __name__ == "__main__":
     main_cli()
