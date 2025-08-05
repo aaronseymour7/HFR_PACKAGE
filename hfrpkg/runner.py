@@ -22,13 +22,13 @@ reaction_map = {
 
 
 extension_map = {
-    "g": ".com"
-    "o": ".inp"
+    "g": ".com",
+    "o": ".inp",
     "p": ".in"
 }
 software_map = {
-    "g": "Gaussian"
-    "o": "Orca"
+    "g": "Gaussian",
+    "o": "Orca",
     "p": "Psi4"
 }
 
@@ -42,10 +42,10 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         method = "B3LYP"
     if basis is None:
         basis = "6-31G"
-    software = extension
     if extension is None:
         extension = "g"
-        software = "g"
+    software = software_map[extension]
+    ext = extension_map[extension]
     level = Theory(
             method=method,
             basis=basis,
@@ -85,7 +85,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"R{Li}_{coeff}"
-                outfile=os.path.join(outfolder, name + extension)
+                outfile=os.path.join(outfolder, name + ext)
                 geom.write(outfile=outfile, theory=level)    
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Li += 1
@@ -94,7 +94,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
                 smiles = Chem.MolToSmiles(mol)
                 inchi = Chem.MolToInchi(mol)
                 name = f"P{Ri}_{coeff}"
-                outfile=os.path.join(outfolder, name + extension)
+                outfile=os.path.join(outfolder, name + ext)
                 geom.write(outfile=outfile, theory=level)
                 idx.write(f"{name}\t{inchi}\t{smiles}\n")
                 Ri += 1
