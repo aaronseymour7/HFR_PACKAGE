@@ -11,16 +11,23 @@ from hfrpkg.run_single import run_jobs
 
 def make_spec(method, basis, extension):
     extension_map = {
-    "g": ".com",
-    "o": ".inp",
-    "p": ".in"
+        "g": ".com",
+        "o": ".inp",
+        "p": ".in"
+    }
+    out_map = {
+        "g": ".log",
+        "o": ".out",
+        "p": ".dat"
     }
     ext = extension_map.get(extension.lower())
-    if ext is None:
+    out = out_map.get(extension.lower())
+
+    if ext is None or out is None:
         print(f"Unknown software code '{extension}'. Please use 'g', 'o', or 'p'.")
         sys.exit(1)
     folder = "unique_com_files/"
-    log_files = glob.glob(os.path.join(folder, "*.log"))
+    log_files = glob.glob(os.path.join(folder, "*"+ out))
 
     if not log_files:
         print("No .log files found in folder.")
