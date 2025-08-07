@@ -8,14 +8,14 @@ import importlib.resources
 
 def compute_folder(folder_path):
     def get_B(filename):
-        base = filename.replace(".log", "")
+        base = os.path.splitext(filename)[0]
         return int(base.split("_")[0][1:])
 
-    def get_final_R_coefficient():
-        pattern = re.compile(r"^R(\d+)_(\d+)\.log$")
+    def get_final_R_coefficient(out=".log"):
+        pattern = re.compile(rf"^R(\d+)_(\d+)\{out}$")
         max_B = -1
         coeff_C = None
-        for filename in glob.glob("*.log"):
+        for filename in glob.glob("*" + out):
             match = pattern.match(filename)
             if match:
                 B, C = int(match.group(1)), int(match.group(2))
@@ -23,11 +23,12 @@ def compute_folder(folder_path):
                     max_B, coeff_C = B, C
         return coeff_C
 
-    def extract_coeff_and_type(filename):
-        m = re.match(r"^([PR])\d+_(\d+)\.log$", filename)
+    def extract_coeff_and_type(filename, out=".log"):
+        escaped_ext = re.escape(out)  # in case the dot needs escaping
+        m = re.match(rf"^([PR])\d+_(\d+){escaped_ext}$", filename)
         if not m:
             return None, None
-        return filename.replace(".log", ""), int(m.group(2))
+        return os.path.splitext(filename)[0], int(m.group(2))
 
     def get_enthalpy(logfile):
         try:
@@ -99,7 +100,10 @@ def compute_folder(folder_path):
                 # Expecting format: "Level:\t reaction_fn_name\t software: \t software_name"
                 parts = first_line.strip().split("\t")
                 if len(parts) >= 4:
-                    return ext_map.get(parts[3].lower(), None)
+                    ext = ext_map.get(parts[3].lower())
+                    if ext is None:
+                        print(f"[ERROR] Unknown software '{parts[3]}' in index.txt.")
+                    return ext
         except FileNotFoundError:
             pass
         return None
@@ -126,27 +130,27 @@ def compute_folder(folder_path):
 
         # Sum DFT enthalpies for reactants/products
         for f in products:
-            mol_type, coeff = extract_coeff_and_type(f)
+            mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             enthalpy = get_enthalpy(f)
             if enthalpy is not None:
                 total_products += coeff * enthalpy
 
         for f in reactants:
-            mol_type, coeff = extract_coeff_and_type(f)
+            mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             enthalpy = get_enthalpy(f)
             if enthalpy is not None:
                 total_reactants += coeff * enthalpy
 
         reaction = 2625.5 * (total_products - total_reactants)
-        final_coeff = get_final_R_coefficient()
+        final_coeff = get_final_R_coefficient(ext)
         if final_coeff is None:
             raise ValueError("Could not determine final coefficient")
 
         # Collect reactant info
         for f in reactants[:-1]:  
-            mol_type, coeff = extract_coeff_and_type(f)
+            mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
             smiles = get_smiles(mol_type)
@@ -158,7 +162,7 @@ def compute_folder(folder_path):
             Hf_reactants += (Hf if Hf else 0) * coeff
             reactants_data.append((coeff, smiles, inchi, Hf))
         input_file = reactants[-1]
-        mol_type, coeff = extract_coeff_and_type(input_file)
+        mol_type, coeff = extract_coeff_and_type(input_file, ext)
         if mol_type is not None:
             inchi = get_inchi(mol_type)
             input_inchi = inchi
@@ -173,7 +177,7 @@ def compute_folder(folder_path):
         
         # Collect product info
         for f in products:
-            mol_type, coeff = extract_coeff_and_type(f)
+            mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
             smiles = get_smiles(mol_type)
