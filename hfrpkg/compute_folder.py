@@ -83,12 +83,32 @@ def compute_folder(folder_path):
         except Exception:
             pass
         return None
-
+    
     cwd = os.getcwd()
     os.chdir(folder_path)
+    
+    def get_extension(index_path="index.txt"):
+        ext_map = {
+            "gaussian": ".log",
+            "orca": ".out",
+            "psi4": ".dat"
+        }
+        try:
+            with open(index_path) as f:
+                first_line = f.readline()
+                # Expecting format: "Level:\t reaction_fn_name\t software: \t software_name"
+                parts = first_line.strip().split("\t")
+                if len(parts) >= 4:
+                    return ext_map.get(parts[3].lower(), None)
+        except FileNotFoundError:
+            pass
+        return None
+    
+    ext = get_extension()
+
 
     try:
-        log_files = sorted(glob.glob("*.log"), key=get_B)
+        log_files = sorted(glob.glob("*"+ ext), key=get_B)
         products = [f for f in log_files if f.startswith("P")]
         reactants = [f for f in log_files if f.startswith("R")]
 
