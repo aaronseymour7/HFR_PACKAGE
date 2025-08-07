@@ -27,7 +27,7 @@ def make_spec(method, basis, extension):
         print(f"Unknown software code '{extension}'. Please use 'g', 'o', or 'p'.")
         sys.exit(1)
     folder = "unique_com_files/"
-    log_files = glob.glob(os.path.join(folder, "*"+ out))
+    log_files = glob.glob(os.path.join(folder, "*.log")
 
     if not log_files:
         print("No .log files found in folder.")
