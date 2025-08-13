@@ -53,7 +53,7 @@ def main():
         outfolder=args.outfolder,
         method = args.m,
         basis = args.b,
-        extenstion = args.s
+        extension = args.s
     )
 
 if __name__ == "__main__":
