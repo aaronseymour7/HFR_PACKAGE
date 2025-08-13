@@ -76,7 +76,7 @@ def run_reaction(action_type, reaction_type, input_smiles, lhs=None, rhs=None, s
         
         index_file = os.path.join(outfolder, "index.txt")
         with open(index_file, "w") as idx:
-            idx.write(f"Level:\t {reaction_fn.__name__} \t Software: \t {software}\n")
+            idx.write(f"Level:\t{reaction_fn.__name__}\tSoftware:\t{software}\n")
             idx.write(f"Input SMILES:\t{input_smiles}\n")
             idx.write("Filename\tInChI\tSMILES\n")
             Ri = Li = 1
