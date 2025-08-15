@@ -12,7 +12,7 @@ def compute_folder(folder_path):
         return int(base.split("_")[0][1:])
 
     def get_final_R_coefficient(out=".log"):
-        pattern = re.compile(rf"^R(\d+)_(\d+)\{out}$")
+        pattern = re.compile(rf"^R(\d+)_(\d+){re.escape(out)}$")
         max_B = -1
         coeff_C = None
         for filename in glob.glob("*" + out):
@@ -33,7 +33,7 @@ def compute_folder(folder_path):
     def get_enthalpy(logfile):
         try:
             reader = FileReader(logfile, just_geom=False)
-            if 'E_ZPVE' in reader.keys()
+            if 'E_ZPVE' in reader.keys():
                 return reader['E_ZPVE']
             else:
                 return None
@@ -42,7 +42,7 @@ def compute_folder(folder_path):
     def get_zpve(logfile):
         try:
             reader = FileReader(logfile, just_geom=False)
-            if 'ZPVE' in reader.keys()
+            if 'ZPVE' in reader.keys():
                 return reader['ZPVE']
             else:
                 return None
@@ -194,8 +194,8 @@ def compute_folder(folder_path):
             inchi = get_inchi(mol_type)
             smiles = get_smiles(mol_type)
             Hf = get_Hf(inchi)
-            energy = get_enthalpy(input_file)
-            zpve = get_zpve(input_file)
+            energy = get_enthalpy(f)
+            zpve = get_zpve(f)
             if Hf is None:
                 print(f"[ATcT MISSING]  {folder_path} {mol_type} → InChI: {inchi}")
                 missing_Hf = True
