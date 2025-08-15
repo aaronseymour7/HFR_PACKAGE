@@ -139,3 +139,25 @@ def geom_from_rdkit(rdkitmol):
         positions = rdkitmol.GetConformer().GetAtomPosition(i)
         atom_list.append(Atom(element=atom.GetSymbol(), coords=positions))
     return Geometry(atom_list)
+
+def get_extensions(index_file):
+    ext_map = {
+        "gaussian": ('.com','.log'),
+        "orca": ('.inp', '.out'),
+        "psi4": ('.in', '.dat')
+    }
+    try:
+        with open(index_file) as f:
+            first_line = f.readline().strip()
+            parts = first_line.split("\t")
+            if len(parts) >= 4 and parts[2].lower() == "software:":
+                software = parts[3].lower()
+                return ext_map.get(software)
+    except FileNotFoundError:
+        print(f"[ERROR] Could not find {index_file}")
+    except Exception as e:
+        print(f"[ERROR] Reading {index_file}: {e}")
+    return None
+
+
+
