@@ -207,7 +207,7 @@ def compute_folder(folder_path):
         if missing_Hf:
             input_hf = ""
         else:
-            input_hf = round((Hf_products - Hf_reactants - reaction) / (final_coeff), 2)
+            input_hf = round((Hf_products - Hf_reactants - reaction) / (final_coeff), 4)
     
         
 
