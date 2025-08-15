@@ -33,14 +33,21 @@ def compute_folder(folder_path):
     def get_enthalpy(logfile):
         try:
             reader = FileReader(logfile, just_geom=False)
-            if 'energy' in reader.keys() and 'ZPVE' in reader.keys():
-                return reader['energy'] + reader['ZPVE']
-            
+            if 'E_ZPVE' in reader.keys()
+                return reader['E_ZPVE']
             else:
                 return None
         except Exception:
             return None
-
+    def get_zpve(logfile):
+        try:
+            reader = FileReader(logfile, just_geom=False)
+            if 'ZPVE' in reader.keys()
+                return reader['ZPVE']
+            else:
+                return None
+        except Exception:
+            return None
     def get_inchi(log_filename, index_path="index.txt"):
         try:
             with open(index_path) as f:
@@ -156,12 +163,14 @@ def compute_folder(folder_path):
             inchi = get_inchi(mol_type)
             smiles = get_smiles(mol_type)
             Hf = get_Hf(inchi)
+            energy = get_enthalpy(f)
+            zpve = get_zpve(f)
             if Hf is None:
                 print(f"[ATcT MISSING]  {folder_path}  {mol_type} → InChI: {inchi}")
                 missing_Hf = True
                 Hf = ""
             Hf_reactants += (Hf if Hf else 0) * coeff
-            reactants_data.append((coeff, smiles, inchi, Hf))
+            reactants_data.append((coeff, smiles, inchi, Hf, energy, zpve))
         input_file = reactants[-1]
         mol_type, coeff = extract_coeff_and_type(input_file, ext)
         if mol_type is not None:
@@ -170,11 +179,13 @@ def compute_folder(folder_path):
             smiles = get_smiles(mol_type)
             input_smiles = smiles
             Hf = get_Hf(inchi)
+            energy = get_enthalpy(input_file)
+            zpve = get_zpve(input_file)
             if Hf is None:
                 print(f"[ATcT MISSING]  {folder_path}  {mol_type} → InChI: {inchi}")
                 Hf = ""
         atct_value = Hf
-        reactants_data.append((coeff, smiles, inchi, Hf))
+        reactants_data.append((coeff, smiles, inchi, Hf, energy, zpve))
         
         # Collect product info
         for f in products:
@@ -183,12 +194,14 @@ def compute_folder(folder_path):
             inchi = get_inchi(mol_type)
             smiles = get_smiles(mol_type)
             Hf = get_Hf(inchi)
+            energy = get_enthalpy(input_file)
+            zpve = get_zpve(input_file)
             if Hf is None:
                 print(f"[ATcT MISSING]  {folder_path} {mol_type} → InChI: {inchi}")
                 missing_Hf = True
                 Hf = ""
             Hf_products += (Hf if Hf else 0) * coeff
-            products_data.append((coeff, smiles, inchi, Hf))
+            products_data.append((coeff, smiles, inchi, Hf, energy, zpve))
 
 
         if missing_Hf:
