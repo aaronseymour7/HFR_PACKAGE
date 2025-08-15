@@ -9,18 +9,19 @@ from AaronTools.geometry import Geometry
 from AaronTools.job_control import SubmitProcess
 from AaronTools.theory.job_types import SinglePointJob
 from hfrpkg.run_single import run_jobs
-
+from hfrpkg.utils import get_extensions
 def make_spec(method, basis, extension):
     
     folder = os.getcwd()
-    log_files = glob.glob(os.path.join(folder, "*.log"))
+    optin, optout = get_extensions()
+    log_files = glob.glob(os.path.join(folder, "*"+ optout))
     extension_map = {
         "g": ".com",
         "o": ".inp",
         "p": ".in"
     }
-    ext = extension_map.get(extension.lower())
-    if ext is None:
+    spext = extension_map.get(extension.lower())
+    if spext is None:
         print(f"Unknown software code '{extension}'. Please use 'g', 'o', or 'p'.")
         sys.exit(1)
     if not log_files:
@@ -34,10 +35,12 @@ def make_spec(method, basis, extension):
         job_type=SinglePointJob()
     )
     com_files = []
-
+    spec_dir = os.path.join(folder, "spec")
+    os.makedirs(spec_dir, exist_ok=True)
+    
     for log_path in log_files:
         name = os.path.splitext(os.path.basename(log_path))[0]
-        com_path = os.path.join(folder, name + ext)
+        com_path = os.path.join(spec_dir, name + spext)
 
         try:
             geom = Geometry(log_path)
@@ -46,7 +49,12 @@ def make_spec(method, basis, extension):
         except Exception as e:
             print(f"Error processing {log_path}: {e}")
             
-    run_jobs()
+    cwd = os.getcwd()
+    os.chdir(spec_dir)
+    try:
+        run_jobs()
+    finally:
+        os.chdir(cwd)
 
     
 def main_cli():
