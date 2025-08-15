@@ -140,7 +140,7 @@ def geom_from_rdkit(rdkitmol):
         atom_list.append(Atom(element=atom.GetSymbol(), coords=positions))
     return Geometry(atom_list)
 
-def get_extensions(index_file):
+def get_extensions(index_path="index.txt"):
     ext_map = {
         "gaussian": ('.com','.log'),
         "orca": ('.inp', '.out'),
