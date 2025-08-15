@@ -33,8 +33,9 @@ def compute_folder(folder_path):
     def get_enthalpy(logfile):
         try:
             reader = FileReader(logfile, just_geom=False)
-            if 'enthalpy' in reader.keys():
-                return reader['enthalpy']
+            if 'energy' in reader.keys() and 'ZPVE' in reader.keys():
+                return reader['energy'] + reader['ZPVE']
+            
             else:
                 return None
         except Exception:
