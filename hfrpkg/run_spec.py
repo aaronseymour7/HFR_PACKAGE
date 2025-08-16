@@ -22,6 +22,11 @@ def make_spec(method, basis, extension):
         "o": ".inp",
         "p": ".in"
     }
+    software_map = {
+        "g": "Gaussian",
+        "o": "ORCA",
+        "p": "Psi4"
+    }
     spext = extension_map.get(extension.lower())
     if spext is None:
         print(f"Unknown software code '{extension}'. Please use 'g', 'o', or 'p'.")
