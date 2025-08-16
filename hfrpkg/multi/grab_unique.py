@@ -4,7 +4,7 @@ import glob
 import shutil
 
 def grab_unique_coms():
-    output_dir = "unique_com_files"
+    output_dir = "unique_files"
     os.makedirs(output_dir, exist_ok=True)
 
     seen_inchis = {}
