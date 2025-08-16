@@ -2,11 +2,13 @@ import sys
 import os
 import glob
 import argparse
+import shutil
 from AaronTools.input import Theory, FileWriter
 from AaronTools.geometry import Geometry
 from AaronTools.job_control import SubmitProcess
 from AaronTools.theory.job_types import SinglePointJob
-from hfrpkg.run_single import run_jobs
+from hfrpkg.run_unique import run_jobs
+from hfrpkg.utils import get_extensions
 
 
 def make_spec(method, basis, extension):
@@ -22,15 +24,19 @@ def make_spec(method, basis, extension):
     }
     ext = extension_map.get(extension.lower())
     out = out_map.get(extension.lower())
-
+    
     if ext is None or out is None:
         print(f"Unknown software code '{extension}'. Please use 'g', 'o', or 'p'.")
         sys.exit(1)
-    folder = "unique_com_files/"
-    log_files = glob.glob(os.path.join(folder, "*.log")
+    os.makedirs("unique_files/spec", exist_ok=True)
+    folder = "unique_files/spec/"
+    index_path = os.path.join(folder, "index.txt")
+    shutil.copyfile("unique_files/index.txt", index_path)
+    optin, optout = get_extensions(index_path)
+    log_files = glob.glob(os.path.join(folder, "*"+ optout))
 
     if not log_files:
-        print("No .log files found in folder.")
+        print(f"No {optout} files found in folder.")
         
         sys.exit(1)
 
@@ -48,11 +54,15 @@ def make_spec(method, basis, extension):
         try:
             geom = Geometry(log_path)
             geom.write(outfile=com_path, theory=level)
-            #print(f"Wrote: {com_path}")
         except Exception as e:
             print(f"Error processing {log_path}: {e}")
-            
-    run_jobs()
+
+    cwd = os.getcwd()
+    os.chdir(folder)
+    try:
+        run_jobs()
+    finally:
+        os.chdir(cwd)
 
 def main_cli():
     parser = argparse.ArgumentParser(description="Generate and submit SP .com files from optimized .log files")
