@@ -5,6 +5,10 @@ import glob
 import re
 from AaronTools.fileIO import FileReader
 import importlib.resources  
+from hfrpkg.read_optsum import read_optsum
+
+opt_data = read_optsum()
+
 
 def spec_folder_compute(folder_path):
     def get_B(filename):
@@ -30,15 +34,24 @@ def spec_folder_compute(folder_path):
             return None, None
         return os.path.splitext(filename)[0], int(m.group(2))
 
-    def get_enthalpy(logfile):
+    def get_enthalpy(logfile, inchi):
+        zpve = None
+        for coeff, smiles, r_inchi, atct, energy, zpve_val in (opt_data["reactants"] + opt_data["products"]):
+            if r_inchi == inchi:
+                zpve = zpve_val
+                break
+        if zpve is None:
+            print(f"No ZPVE found in opt_summary for {inchi}")
+            zpve = 0.0
+
         try:
             reader = FileReader(logfile, just_geom=False)
-            if 'E_ZPVE' in reader.keys():
-                return reader['E_ZPVE']
-            else:
-                return None
+            if "energy" in reader.keys():
+                return reader["energy"] + zpve
         except Exception:
-            return None
+            pass
+        return None
+    
     def get_zpve(logfile):
         try:
             reader = FileReader(logfile, just_geom=False)
