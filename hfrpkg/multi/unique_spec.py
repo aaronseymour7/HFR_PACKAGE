@@ -22,6 +22,11 @@ def make_spec(method, basis, extension):
         "o": ".out",
         "p": ".dat"
     }
+    let_map = {
+        "g": "Gaussian",
+        "o": "ORCA",
+        "p": "Psi4"
+    }
     ext = extension_map.get(extension.lower())
     out = out_map.get(extension.lower())
     
@@ -45,7 +50,7 @@ def make_spec(method, basis, extension):
         basis=basis,
         job_type=SinglePointJob()
     )
-    com_files = []
+    
     
     for log_path in log_files:
         name = os.path.splitext(os.path.basename(log_path))[0]
@@ -56,13 +61,23 @@ def make_spec(method, basis, extension):
             geom.write(outfile=com_path, theory=level)
         except Exception as e:
             print(f"Error processing {log_path}: {e}")
-
+    
+    with open("unique_files/index.txt", "r") as fin, open(index_path, "w") as fout:
+        for line in fin:
+            if line.startswith("Filename") or line.startswith("Level"):
+                fout.write(line)
+                continue
+            parts = line.strip().split("\t")
+            if len(parts) >= 4:
+                parts[3] = let_map.get(extension.lower())  
+            fout.write("\t".join(parts) + "\n")
     cwd = os.getcwd()
     os.chdir(folder)
     try:
         run_jobs()
     finally:
         os.chdir(cwd)
+        
 
 def main_cli():
     parser = argparse.ArgumentParser(description="Generate and submit SP .com files from optimized .log files")
