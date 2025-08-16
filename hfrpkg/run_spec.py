@@ -55,7 +55,7 @@ def make_spec(method, basis, extension):
             if "Software:" in parts:
                 sw_idx = parts.index("Software:") + 1
                 if sw_idx < len(parts):
-                    parts[sw_idx] = software + "\n"
+                    parts[sw_idx] = software 
                     lines[0] = "\t".join(parts)
 
         with open(os.path.join(spec_dir, "index.txt"), "w", encoding="utf-8") as f:
