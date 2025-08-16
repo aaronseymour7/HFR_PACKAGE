@@ -10,7 +10,17 @@ from hfrpkg.read_optsum import read_optsum
 
 
 
-def spec_compute(spec_folder_path, opt_data):
+def spec_compute(mhfr_file):
+    cwd = os.getcwd()  
+
+    
+    reaction_data = compute_folder(mhfr_file)
+    write_single_reaction(reaction_data, mhfr_file)  
+    opt_data = read_optsum(mhfr_file)                
+
+    
+    spec_dir = os.path.join(cwd, "spec")
+    os.chdir(spec_dir)
     def get_B(filename):
         base = os.path.splitext(filename)[0]
         return int(base.split("_")[0][1:])
@@ -99,8 +109,7 @@ def spec_compute(spec_folder_path, opt_data):
             pass
         return None
     
-    cwd = os.getcwd()
-    os.chdir(spec_folder_path)
+    
     
     def get_extension(index_path="index.txt"):
         ext_map = {
@@ -172,7 +181,7 @@ def spec_compute(spec_folder_path, opt_data):
             enthalpy, zpve = get_enthalpy(f, inchi)
             
             if Hf is None:
-                print(f"[ATcT MISSING]  {spec_folder_path}  {mol_type} → InChI: {inchi}")
+                print(f"[ATcT MISSING]  {spec_dir}  {mol_type} → InChI: {inchi}")
                 missing_Hf = True
                 Hf = ""
             Hf_reactants += (Hf if Hf else 0) * coeff
@@ -187,7 +196,7 @@ def spec_compute(spec_folder_path, opt_data):
             enthalpy, zpve = get_enthalpy(input_file, inchi)
             
             if Hf is None:
-                print(f"[ATcT MISSING]  {spec_folder_path}  {mol_type} → InChI: {inchi}")
+                print(f"[ATcT MISSING]  {spec_dir}  {mol_type} → InChI: {inchi}")
                 Hf = ""
             atct_value = Hf
             reactants_data.append((coeff, inchi, Hf, enthalpy, zpve))
@@ -200,7 +209,7 @@ def spec_compute(spec_folder_path, opt_data):
             Hf = get_Hf(inchi)
             enthalpy, zpve = get_enthalpy(f, inchi)
             if Hf is None:
-                print(f"[ATcT MISSING]  {spec_folder_path} {mol_type} → InChI: {inchi}")
+                print(f"[ATcT MISSING]  {spec_dir} {mol_type} → InChI: {inchi}")
                 missing_Hf = True
                 Hf = ""
             Hf_products += (Hf if Hf else 0) * coeff
