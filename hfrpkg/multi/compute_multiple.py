@@ -5,7 +5,8 @@ from hfrpkg.multi.fill import fill_logs
 from hfrpkg.multi.comp import main as comp
 
 def combined_postprocess():
-    fill_logs()
+    
+    fill_logs("unique_files")
 
     comp()
 
