@@ -10,7 +10,7 @@ from hfrpkg.read_optsum import read_optsum
 
 
 
-def spec_compute(folder_path):
+def spec_compute(spec_folder_path, opt_data):
     def get_B(filename):
         base = os.path.splitext(filename)[0]
         return int(base.split("_")[0][1:])
@@ -40,27 +40,20 @@ def spec_compute(folder_path):
             if r_inchi == inchi:
                 zpve = zpve_val
                 break
-        if zpve is None:
-            print(f"No ZPVE found in opt_summary for {inchi}")
-            zpve = 0.0
+        
 
         try:
             reader = FileReader(logfile, just_geom=False)
             if "energy" in reader.keys():
-                return reader["energy"] + zpve
+                if zpve is None:
+                    print(f"No ZPVE found in opt_summary for {inchi}")
+                    return None, zpve
+                return reader["energy"] + zpve, zpve
         except Exception:
             pass
-        return None
+        return None, None
     
-    def get_zpve(logfile):
-        try:
-            reader = FileReader(logfile, just_geom=False)
-            if 'ZPVE' in reader.keys():
-                return reader['ZPVE']
-            else:
-                return None
-        except Exception:
-            return None
+
     def get_inchi(log_filename, index_path="index.txt"):
         try:
             with open(index_path) as f:
@@ -107,7 +100,7 @@ def spec_compute(folder_path):
         return None
     
     cwd = os.getcwd()
-    os.chdir(folder_path)
+    os.chdir(spec_folder_path)
     
     def get_extension(index_path="index.txt"):
         ext_map = {
@@ -149,18 +142,19 @@ def spec_compute(folder_path):
         reactants_data = []
         products_data = []
 
-        # Sum DFT enthalpies for reactants/products
         for f in products:
             mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
-            enthalpy = get_enthalpy(f)
+            inchi = get_inchi(mol_type)
+            enthalpy, zpve = get_enthalpy(f, inchi)
             if enthalpy is not None:
                 total_products += coeff * enthalpy
 
         for f in reactants:
             mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
-            enthalpy = get_enthalpy(f)
+            inchi = get_inchi(mol_type)
+            enthalpy, zpve = get_enthalpy(f, inchi)
             if enthalpy is not None:
                 total_reactants += coeff * enthalpy
 
@@ -169,52 +163,48 @@ def spec_compute(folder_path):
         if final_coeff is None:
             raise ValueError("Could not determine final coefficient")
 
-        # Collect reactant info
         for f in reactants[:-1]:  
             mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
-            smiles = get_smiles(mol_type)
+            
             Hf = get_Hf(inchi)
-            energy = get_enthalpy(f)
-            zpve = get_zpve(f)
+            enthalpy, zpve = get_enthalpy(f, inchi)
+            
             if Hf is None:
-                print(f"[ATcT MISSING]  {folder_path}  {mol_type} → InChI: {inchi}")
+                print(f"[ATcT MISSING]  {spec_folder_path}  {mol_type} → InChI: {inchi}")
                 missing_Hf = True
                 Hf = ""
             Hf_reactants += (Hf if Hf else 0) * coeff
-            reactants_data.append((coeff, smiles, inchi, Hf, energy, zpve))
+            reactants_data.append((coeff, inchi, Hf, enthalpy, zpve))
         input_file = reactants[-1]
         mol_type, coeff = extract_coeff_and_type(input_file, ext)
         if mol_type is not None:
             inchi = get_inchi(mol_type)
-            input_inchi = inchi
-            smiles = get_smiles(mol_type)
-            input_smiles = smiles
+            input_smiles = get_smiles(input_file)
+            input_inchi = inchi        
             Hf = get_Hf(inchi)
-            energy = get_enthalpy(input_file)
-            zpve = get_zpve(input_file)
+            enthalpy, zpve = get_enthalpy(input_file, inchi)
+            
             if Hf is None:
-                print(f"[ATcT MISSING]  {folder_path}  {mol_type} → InChI: {inchi}")
+                print(f"[ATcT MISSING]  {spec_folder_path}  {mol_type} → InChI: {inchi}")
                 Hf = ""
-        atct_value = Hf
-        reactants_data.append((coeff, smiles, inchi, Hf, energy, zpve))
+            atct_value = Hf
+            reactants_data.append((coeff, inchi, Hf, enthalpy, zpve))
         
-        # Collect product info
         for f in products:
             mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
-            smiles = get_smiles(mol_type)
+            
             Hf = get_Hf(inchi)
-            energy = get_enthalpy(f)
-            zpve = get_zpve(f)
+            enthalpy, zpve = get_enthalpy(f, inchi)
             if Hf is None:
-                print(f"[ATcT MISSING]  {folder_path} {mol_type} → InChI: {inchi}")
+                print(f"[ATcT MISSING]  {spec_folder_path} {mol_type} → InChI: {inchi}")
                 missing_Hf = True
                 Hf = ""
             Hf_products += (Hf if Hf else 0) * coeff
-            products_data.append((coeff, smiles, inchi, Hf, energy, zpve))
+            products_data.append((coeff, inchi, Hf, enthalpy, zpve))
 
 
         if missing_Hf:
@@ -238,7 +228,7 @@ def spec_compute(folder_path):
         }
 
     except Exception as e:
-        print(f"[ERROR] Folder {folder_path}: {e}")
+        print(f"[ERROR] Folder {spec_folder_path}: {e}")
         return None
 
     finally:
