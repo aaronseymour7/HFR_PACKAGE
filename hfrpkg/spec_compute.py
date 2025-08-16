@@ -176,7 +176,7 @@ def spec_compute(mhfr_file):
             mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
-            
+            smiles = get_smiles(f)
             Hf = get_Hf(inchi)
             enthalpy, zpve = get_enthalpy(f, inchi)
             
@@ -185,7 +185,7 @@ def spec_compute(mhfr_file):
                 missing_Hf = True
                 Hf = ""
             Hf_reactants += (Hf if Hf else 0) * coeff
-            reactants_data.append((coeff, inchi, Hf, enthalpy, zpve))
+            reactants_data.append((coeff, smiles, inchi, Hf, enthalpy, zpve))
         input_file = reactants[-1]
         mol_type, coeff = extract_coeff_and_type(input_file, ext)
         if mol_type is not None:
@@ -199,13 +199,13 @@ def spec_compute(mhfr_file):
                 print(f"[ATcT MISSING]  {spec_dir}  {mol_type} → InChI: {inchi}")
                 Hf = ""
             atct_value = Hf
-            reactants_data.append((coeff, inchi, Hf, enthalpy, zpve))
+            reactants_data.append((coeff, input_smiles, inchi, Hf, enthalpy, zpve))
         
         for f in products:
             mol_type, coeff = extract_coeff_and_type(f, ext)
             if mol_type is None: continue
             inchi = get_inchi(mol_type)
-            
+            smiles = get_smiles(f)
             Hf = get_Hf(inchi)
             enthalpy, zpve = get_enthalpy(f, inchi)
             if Hf is None:
@@ -213,7 +213,7 @@ def spec_compute(mhfr_file):
                 missing_Hf = True
                 Hf = ""
             Hf_products += (Hf if Hf else 0) * coeff
-            products_data.append((coeff, inchi, Hf, enthalpy, zpve))
+            products_data.append((coeff, smiles, inchi, Hf, enthalpy, zpve))
 
 
         if missing_Hf:
@@ -225,7 +225,7 @@ def spec_compute(mhfr_file):
 
         level = get_level()
 
-        return {
+        sp_data = {
             "input_smiles": input_smiles,
             "input_inchi": input_inchi,
             "dft_hf": input_hf,
@@ -235,9 +235,23 @@ def spec_compute(mhfr_file):
             "input_atct": atct_value,
             "reaction_H": reaction
         }
+        output_path = os.path.join(spec_dir, "sp_summary.txt")
+        with open(output_path, "w", encoding="utf-8") as fout:
+            fout.write(f"{sp_data['input_smiles']}\t{sp_data['input_inchi']}\n")
+            fout.write(f"Reaction Enthalpy (kJ/mol):{sp_data['reaction_H']}\n")
+            fout.write(f"DFT Enthalpy of Formation (kJ/mol):{sp_data['dft_hf']}\n")
+            fout.write("REACTANTS\n")
+            for coeff, smiles, inchi, atct, enthalpy, zpve in sp_data['reactants']:
+                fout.write(f"{coeff} {smiles}\t{inchi}\t{atct}\t{enthalpy}\t{zpve}\n")
+        
+            fout.write("PRODUCTS\n")
+            for coeff, smiles, inchi, atct, enthalpy, zpve in sp_data['products']:
+                fout.write(f"{coeff} {smiles}\t{inchi}\t{atct}\t{enthalpy}\t{zpve}\n")
+        
+        return sp_data
 
     except Exception as e:
-        print(f"[ERROR] Folder {spec_folder_path}: {e}")
+        print(f"[ERROR] Folder {spec_dir}: {e}")
         return None
 
     finally:
