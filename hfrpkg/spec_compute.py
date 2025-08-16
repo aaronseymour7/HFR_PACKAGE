@@ -7,10 +7,10 @@ from AaronTools.fileIO import FileReader
 import importlib.resources  
 from hfrpkg.read_optsum import read_optsum
 
-opt_data = read_optsum()
 
 
-def spec_folder_compute(folder_path):
+
+def spec_compute(folder_path):
     def get_B(filename):
         base = os.path.splitext(filename)[0]
         return int(base.split("_")[0][1:])
