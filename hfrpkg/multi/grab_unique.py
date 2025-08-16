@@ -18,7 +18,7 @@ def grab_unique_coms():
             index_file_path = os.path.join(mhfr_dir, "index.txt")
             if not os.path.isfile(index_file_path):
                 continue
-
+            inext, outext = get_extensions(index_file_path)
             with open(index_file_path, "r") as f:
                 lines = f.readlines()
 
@@ -33,13 +33,13 @@ def grab_unique_coms():
                 filename, inchi, smiles = parts
                 if inchi in seen_inchis:
                     continue  # already processed
-
-                source_com_path = os.path.join(mhfr_dir, filename + ".com")
+                
+                source_com_path = os.path.join(mhfr_dir, filename + inext)
                 if not os.path.isfile(source_com_path):
                     print(f"[WARNING] Missing .com file: {source_com_path}")
                     continue
 
-                dest_com_filename = f"{counter}.com"
+                dest_com_filename = f"{counter}{inext}"
                 dest_com_path = os.path.join(output_dir, dest_com_filename)
 
                 shutil.copyfile(source_com_path, dest_com_path)
