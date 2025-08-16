@@ -4,6 +4,7 @@ import sys
 import os
 import glob
 import argparse
+import shutil
 from AaronTools.input import Theory, FileWriter
 from AaronTools.geometry import Geometry
 from AaronTools.job_control import SubmitProcess
@@ -11,6 +12,7 @@ from AaronTools.theory.job_types import SinglePointJob
 from hfrpkg.run_single import run_jobs
 from hfrpkg.utils import get_extensions
 def make_spec(method, basis, extension):
+    
     
     folder = os.getcwd()
     optin, optout = get_extensions()
@@ -37,7 +39,14 @@ def make_spec(method, basis, extension):
     com_files = []
     spec_dir = os.path.join(folder, "spec")
     os.makedirs(spec_dir, exist_ok=True)
-    
+
+    index_path = os.path.join(folder, "index.txt")
+    if os.path.exists(index_path):
+        shutil.copy(index_path, spec_dir)
+        print(f"Copied index.txt to {spec_dir}")
+    else:
+        print("Warning: index.txt not found in parent directory.")
+
     for log_path in log_files:
         name = os.path.splitext(os.path.basename(log_path))[0]
         com_path = os.path.join(spec_dir, name + spext)
