@@ -28,6 +28,7 @@ def make_spec(method, basis, extension):
         "p": "Psi4"
     }
     spext = extension_map.get(extension.lower())
+    software = software_map.get(extension.lower())
     if spext is None:
         print(f"Unknown software code '{extension}'. Please use 'g', 'o', or 'p'.")
         sys.exit(1)
@@ -47,11 +48,23 @@ def make_spec(method, basis, extension):
 
     index_path = os.path.join(folder, "index.txt")
     if os.path.exists(index_path):
-        shutil.copy(index_path, spec_dir)
-        print(f"Copied index.txt to {spec_dir}")
+        with open(index_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        if lines and lines[0].startswith("Level:"):
+            parts = lines[0].split("\t")
+            if "Software:" in parts:
+                sw_idx = parts.index("Software:") + 1
+                if sw_idx < len(parts):
+                    parts[sw_idx] = software + "\n"
+                    lines[0] = "\t".join(parts)
+
+        with open(os.path.join(spec_dir, "index.txt"), "w", encoding="utf-8") as f:
+            f.writelines(lines)
+
+        print(f"Copied and updated index.txt to {spec_dir}")
     else:
         print("Warning: index.txt not found in parent directory.")
-
+        
     for log_path in log_files:
         name = os.path.splitext(os.path.basename(log_path))[0]
         com_path = os.path.join(spec_dir, name + spext)
