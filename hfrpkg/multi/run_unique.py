@@ -3,9 +3,9 @@ import glob
 from AaronTools.job_control import SubmitProcess
 
 def run_jobs():
-    com_files = glob.glob("unique_com_files/*.com")
+    com_files = glob.glob("unique_files/*.com") + glob.glob("unique_files/*.in") + glob.glob("unique_files/*.inp")
     if not com_files:
-        print("No .com files found in current directory.")
+        print("No runnable files found in current directory.")
         sys.exit(1)
 
     for f in com_files:
