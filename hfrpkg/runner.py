@@ -28,7 +28,7 @@ extension_map = {
 }
 software_map = {
     "g": "Gaussian",
-    "o": "Orca",
+    "o": "ORCA",
     "p": "Psi4"
 }
 
