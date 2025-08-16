@@ -12,10 +12,11 @@ def grab_unique_coms():
 
     output_index_path = os.path.join(output_dir, "index.txt")
     with open(output_index_path, "w") as index_out:
-        index_out.write("Filename\tInChI\tSMILES\n")
+        index_out.write("Filename\tInChI\tSMILES\tSoftware\n")
 
         for mhfr_dir in sorted(glob.glob("*.mhfr")):
             index_file_path = os.path.join(mhfr_dir, "index.txt")
+            software = ""
             if not os.path.isfile(index_file_path):
                 continue
             inext, outext = get_extensions(index_file_path)
@@ -23,7 +24,16 @@ def grab_unique_coms():
                 lines = f.readlines()
 
             for line in lines:
-                if line.startswith("Level:") or line.startswith("Filename"):
+                if line.startswith("Filename"):
+                    continue
+                if line.startswith("Level:"):           
+                    try:
+                        parts = line.strip().split("\t")
+                        if len(parts) >= 4:
+                            software = parts[3]
+                    except FileNotFoundError:
+                        print(f"No software found in index.txt")
+                        continue
                     continue
 
                 parts = line.strip().split("\t")
@@ -44,7 +54,7 @@ def grab_unique_coms():
 
                 shutil.copyfile(source_com_path, dest_com_path)
 
-                index_out.write(f"{counter}\t{inchi}\t{smiles}\n")
+                index_out.write(f"{counter}\t{inchi}\t{smiles}\t{software}\n")
 
                 seen_inchis[inchi] = counter
                 counter += 1
