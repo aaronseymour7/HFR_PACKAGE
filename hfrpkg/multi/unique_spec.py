@@ -37,7 +37,7 @@ def make_spec(method, basis, extension):
     folder = "unique_files/spec/"
     index_path = os.path.join(folder, "index.txt")
     shutil.copyfile("unique_files/index.txt", index_path)
-    optin, optout = get_extensions(index_path)
+    optin, optout = get_extensions("1.mhfr/index.txt")
     log_files = glob.glob(os.path.join(folder, "*"+ optout))
 
     if not log_files:
