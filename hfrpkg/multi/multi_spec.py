@@ -69,7 +69,7 @@ def main():
     fill_logs("unique_files")
     results = []
 
-    with open("reaction_summaries.txt", "w", encoding="utf-8") as rxn_fout:
+    with open("sp_reaction_summaries.txt", "w", encoding="utf-8") as rxn_fout:
         for mhfr_dir in glob.glob("*.mhfr"):
             try:
                 os.chdir(mhfr_dir)
@@ -79,7 +79,7 @@ def main():
                 if sp_data is not None:
                     results.append(sp_data)
 
-                    summary_file = os.path.join(mhfr_dir, "reaction_summary.txt")
+                    summary_file = os.path.join(mhfr_dir, "spreaction_summary.txt")
                     if os.path.exists(summary_file):
                         with open(summary_file, "r", encoding="utf-8") as sf:
                             rxn_fout.write(f"=== {mhfr_dir}/reaction_summary.txt ===\n")
