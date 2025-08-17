@@ -11,8 +11,10 @@ from hfrpkg.read_optsum import read_optsum
 
 
 def spec_compute(mhfr_file):
+    
     cwd = os.getcwd()  
-
+    if mhfr is None:
+        mhfr = cwd
     
     reaction_data = compute_folder(mhfr_file)
     write_single_reaction(reaction_data, mhfr_file)  
@@ -256,3 +258,13 @@ def spec_compute(mhfr_file):
 
     finally:
         os.chdir(cwd)
+
+def main_cli():
+    parser = argparse.ArgumentParser(description="Generate and submit SP .com files from optimized .log files")
+    parser.add_argument("--f", "--folder", dest="f", default= None, help="mhfr folder, if only single, leave empty")
+    args = parser.parse_args()
+
+    spec_compute(mhfr=args.f)
+
+if __name__ == "__main__":
+    main_cli()
