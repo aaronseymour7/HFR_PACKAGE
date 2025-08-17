@@ -79,7 +79,7 @@ def main():
                 if sp_data is not None:
                     results.append(sp_data)
 
-                    summary_file = os.path.join(mhfr_dir, "spreaction_summary.txt")
+                    summary_file = os.path.join(mhfr_dir, "sp_summary.txt")
                     if os.path.exists(summary_file):
                         with open(summary_file, "r", encoding="utf-8") as sf:
                             rxn_fout.write(f"=== {mhfr_dir}/reaction_summary.txt ===\n")
