@@ -2,6 +2,8 @@
 import os
 import glob
 import shutil
+from hfrpkg.utils import get_extensions
+
 
 def grab_unique_coms():
     output_dir = "unique_files"
