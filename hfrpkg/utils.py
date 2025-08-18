@@ -147,7 +147,7 @@ def get_extensions(index_path="index.txt"):
         "psi4": ('.in', '.dat')
     }
     try:
-        with open(index_file) as f:
+        with open(index_path) as f:
             first_line = f.readline().strip()
             parts = first_line.split("\t")
             if len(parts) >= 4 and parts[2].lower() == "software:":
