@@ -3,7 +3,7 @@ import glob
 import shutil
 import csv
 from hfrpkg.utils import get_extensions
-from hfrpkg.spec_compute import spec_compute
+from hfrpkg.multi.spec_compute import spec_compute
 
 
 def load_unique_inchi_map(index_path):
