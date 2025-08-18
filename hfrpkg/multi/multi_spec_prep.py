@@ -3,8 +3,8 @@ import os
 import glob
 import argparse
 import shutil
-from hfrpkg.compute_multiple import combined_postprocess as compute_multiple
-from hfrpkg.unique_spec import make_spec
+from hfrpkg.multi.compute_multiple import combined_postprocess as compute_multiple
+from hfrpkg.multi.unique_spec import make_spec
 
 def multi_spprep(method, basis, extension):
   compute_multiple()
